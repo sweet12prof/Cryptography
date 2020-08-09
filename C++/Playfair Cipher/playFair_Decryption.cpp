@@ -8,20 +8,20 @@ void rowTransForm(const std::array<std::array<char, 5>, 5> &, std::string &, std
 void columnTransform(const std::array<std::array<char, 5>, 5> &, std::string &, std::string &);
 void BoxTransform(const std::array<std::array<char, 5>, 5> &, std::string &, std::string &);
 void FilterMessage( std::string & );
-std::string EncryptMessage(std::string );
+std::string DecryptMessage(std::string );
 std::string processMessage(std::string );
 
 
 int Column_1, row_1, Column_2, row_2;
 int TrColumn_1, Trrow_1, TrColumn_2, Trrow_2;
-std::string originalMessage{"chris is a fool"};
+std::string originalMessage{"sa seuf ga mgxz hndt"};// hyakxa sx ba phmp
 std::string result = "";
 int FP, BP = 0;
 int main(){
     
     while(FP < originalMessage.size()){
         std::string token = processMessage(originalMessage);
-        result = result + " " + EncryptMessage(token);
+        result = result + " " + DecryptMessage(token);
          }
     
      std::cout <<std::endl  <<"Encrypted Token is : " << result << std::endl;
@@ -48,7 +48,7 @@ std::string processMessage(std::string  someMessage){
     return token;
 }
 
-std::string EncryptMessage(std::string Input){
+std::string DecryptMessage(std::string Input){
 
     std::array<std::array<char, 5>, 5> playFairTemplate {'m','o','n','a','r','c','h','y','b','d','e','f','g','i','k','l','p','q','s','t','u','v','w','x','z'};
     std::string currentPair;
@@ -207,8 +207,8 @@ void rowTransForm(const std::array<std::array<char, 5>, 5> & playFairTemp, std::
     Trrow_1 = row_1;
     Trrow_2 = row_2; 
 
-    TrColumn_1 = (Column_1 < 4) ? Column_1 + 1 : ((Column_1 + 1) % 4);
-    TrColumn_2 = (Column_2 < 4) ? Column_2 + 1 : ((Column_2 + 1) % 4);
+    TrColumn_1 = (Column_1 > 0) ? Column_1 - 1 : ((Column_1 + 4) % 5);
+    TrColumn_2 = (Column_2 > 0) ? Column_2 - 1 : ((Column_2 + 4) % 5);
 
     for(auto item : currPair){
         if(count == 0)
@@ -224,8 +224,8 @@ void columnTransform(const std::array<std::array<char, 5>, 5> & playFairTemp, st
     
     int count = 0;
 
-    Trrow_1 =      (row_1 < 4) ? row_1 + 1 : ((row_1 + 1) % 5);
-    Trrow_2 =     (row_2 < 4) ? row_2 + 1 : ((row_2 + 1) % 5);
+    Trrow_1 =      (row_1 > 0) ? row_1 - 1 : ((row_1 + 4) % 5);
+    Trrow_2 =     (row_2 > 0 ) ? row_2 - 1 : ((row_2 + 4) % 5);
 
     TrColumn_1 = Column_1;
     TrColumn_2 = Column_2;
