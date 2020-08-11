@@ -14,7 +14,7 @@ std::string processMessage(std::string );
 
 int Column_1, row_1, Column_2, row_2;
 int TrColumn_1, Trrow_1, TrColumn_2, Trrow_2;
-std::string originalMessage{"sa seuf ga mgxz hndt"};// hyakxa sx ba phmp
+std::string originalMessage{"imiwifmrlk"};// hyakxa sx ba phmp
 std::string result = "";
 int FP, BP = 0;
 int main(){

@@ -14,7 +14,7 @@ std::string processMessage(std::string );
 
 int Column_1, row_1, Column_2, row_2;
 int TrColumn_1, Trrow_1, TrColumn_2, Trrow_2;
-std::string originalMessage{"i live in new york"}; //onarmdyb
+std::string originalMessage{"eaggerate"}; //onarmdyb
 std::string result = "";
 int FP, BP = 0;
 int main(){
@@ -207,8 +207,8 @@ void rowTransForm(const std::array<std::array<char, 5>, 5> & playFairTemp, std::
     Trrow_1 = row_1;
     Trrow_2 = row_2; 
 
-    TrColumn_1 = (Column_1 < 4) ? Column_1 + 1 : ((Column_1 + 1) % 4);
-    TrColumn_2 = (Column_2 < 4) ? Column_2 + 1 : ((Column_2 + 1) % 4);
+    TrColumn_1 = (Column_1 < 4) ? Column_1 + 1 : ((Column_1 + 1) % 5);
+    TrColumn_2 = (Column_2 < 4) ? Column_2 + 1 : ((Column_2 + 1) % 5);
 
     for(auto item : currPair){
         if(count == 0)
@@ -224,8 +224,8 @@ void columnTransform(const std::array<std::array<char, 5>, 5> & playFairTemp, st
     
     int count = 0;
 
-    Trrow_1 =      (row_1 < 4) ? row_1 + 1 : ((row_1 + 1) % 5);
-    Trrow_2 =     (row_2 < 4) ? row_2 + 1 : ((row_2 + 1) % 5);
+    Trrow_1 =      (row_1 < 4) ? row_1 + 1 : 0;
+    Trrow_2 =     (row_2 < 4) ? row_2 + 1 : 0;
 
     TrColumn_1 = Column_1;
     TrColumn_2 = Column_2;
