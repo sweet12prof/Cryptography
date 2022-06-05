@@ -21,14 +21,6 @@ struct P_LR_BLOCK
 struct K_LR_BLOCK{
    std::bitset <kSplitSize> Lside, 
                              Rside;
-  //  std::bitset <kSplitSize>   merge;
-
-    // void mergeSide(){
-    //     for(int i{0}; i<ksize_o; i++){
-    //          if(i< 28)
-    //             merge[i] = L 
-    //     }
-    // }
 };
 
 std::array <unsigned int, kSize> ParityDropIndexTable{
@@ -61,6 +53,7 @@ void ksplit(const std::bitset<kSize> &, K_LR_BLOCK & );
 
 void Swapper (P_LR_BLOCK &);
 std::bitset <pSize> Combine(P_LR_BLOCK);
+
 void Keygen (const std::bitset<pSize> &, K_LR_BLOCK & , std::array <std::bitset<ksize_o>, karray> & );
 std::bitset<kSize> KeyReduce (const std::bitset <pSize> &); 
 void circularShift(std::bitset<kSplitSize>  &);
