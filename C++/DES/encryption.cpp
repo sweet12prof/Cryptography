@@ -5,24 +5,27 @@
 #include <string>
 #include <iostream>
 
-const std::size_t pSize = 64;
-const std::size_t kSize = 56;
-const std::size_t pSplitSize = 32;
-const std::size_t kSplitSize = 28;
-const std::size_t ksize_o = 48;
-const std::size_t karray = 16;
+const std::size_t pSize = 64;            //PlainTextSize
+const std::size_t kSize = 56;            //KeySizeAFterParityDrop
+const std::size_t pSplitSize = 32;       //PlaintextsizeafterSplit
+const std::size_t kSplitSize = 28;       //KeysizeafterSplit
+const std::size_t ksize_o = 48;          //RoundKey
+const std::size_t karray = 16;           //Array holding KeySchedule
 
+//Struct Holds the Left and Right Half Of Plaintext
 struct P_LR_BLOCK
 {
     std::bitset <pSplitSize> Lside, 
                              Rside;
 };
 
+//Struct Holds the Left and Right Half Of Keys
 struct K_LR_BLOCK{
    std::bitset <kSplitSize> Lside, 
                              Rside;
 };
 
+//Table to Drop Parity bits and permute Key
 std::array <unsigned int, kSize> ParityDropIndexTable{
     57, 49, 41, 33, 25, 17, 9, 1, 
     58, 50, 42, 34, 26, 18, 10, 2, 
@@ -33,6 +36,7 @@ std::array <unsigned int, kSize> ParityDropIndexTable{
     29, 21, 13, 5,  28, 20, 12, 4
 };
 
+//Table for Key Compression 56to48bits
 std::array <unsigned int, ksize_o> CompressionD_Box{
     14, 17, 11, 24, 1,   5,  3, 28,
     15, 6, 21,  10, 23, 19, 12,  4, 
@@ -54,10 +58,11 @@ void ksplit(const std::bitset<kSize> &, K_LR_BLOCK & );
 void Swapper (P_LR_BLOCK &);
 std::bitset <pSize> Combine(P_LR_BLOCK);
 
-void Keygen (const std::bitset<pSize> &, K_LR_BLOCK & , std::array <std::bitset<ksize_o>, karray> & );
-std::bitset<kSize> KeyReduce (const std::bitset <pSize> &); 
-void circularShift(std::bitset<kSplitSize>  &);
-std::bitset <ksize_o> CompComb (const K_LR_BLOCK &);
+//KeyFunctions
+void Keygen (const std::bitset<pSize> &, K_LR_BLOCK & , std::array <std::bitset<ksize_o>, karray> & ); ///ParentFunction
+std::bitset<kSize> KeyReduce (const std::bitset <pSize> &);  //RemovesParitiesandPermuteKey
+void circularShift(std::bitset<kSplitSize>  &);              //CircularshiftSub Routine
+std::bitset <ksize_o> CompComb (const K_LR_BLOCK &);         //Compress and Combine - Final key subroutine
 
 int main(){
     K_LR_BLOCK k_lr;
