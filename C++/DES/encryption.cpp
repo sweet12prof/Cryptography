@@ -1,4 +1,4 @@
-#include "../Headers/encryption.hpp"
+#include "./Headers/encryption.hpp"
 #include <iostream>
 int main(){
     K_LR_BLOCK k_lr;
