@@ -10,7 +10,7 @@ int main(){
     //         std::cout << std::hex << item.to_ulong() << std::endl;
     std::bitset <ksize_o> a = 0xFCFCFCFCFCFC;
     std::bitset <pSplitSize> b = 0xFCFCFCFC;
-   std::cout <<  F_Sub_boxes(Func_xor(F_ExpansionD(b), a));
+   std::cout << F_Straight_D_box(F_Sub_boxes(Func_xor(F_ExpansionD(b), a)));
 }
 
 
@@ -172,3 +172,14 @@ std::bitset <pSplitSize> F_Sub_boxes (const std::bitset<ksize_o> & postXor){
     return indexArr;
 }
 
+
+std::bitset <pSplitSize> F_Sub_boxes (const std::bitset<pSplitSize> & text){
+    size_t j{0};
+    std::bitset<pSplitSize> out;
+
+    for (int i{pSplitSize}; i > 0; i-- ){
+        out[i - 1] = text[-1 * ( F_StraightBox[j] - 32)];
+        j++;
+    }
+    return out;
+} 

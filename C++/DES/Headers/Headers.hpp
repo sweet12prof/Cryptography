@@ -11,3 +11,4 @@ void ksplit(const std::bitset<kSize> &, K_LR_BLOCK & );
 std::bitset<ksize_o> F_ExpansionD(const std::bitset<pSplitSize> &);
 inline std::bitset <ksize_o> Func_xor (const std::bitset<ksize_o> & , const std::bitset <ksize_o> &  );
 std::bitset <pSplitSize> F_Sub_boxes (const std::bitset<ksize_o> &); 
+std::bitset <pSplitSize> F_Straight_D_box (const std::bitset<pSplitSize> &); 
