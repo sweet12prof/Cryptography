@@ -2,24 +2,9 @@
 #include <iostream>
 std::array <size_t, 8> getNextIndexBits (const std::bitset <ksize_o>  );
 int main(){
-
-    
-    std::bitset<pSize> key64 = 0xAABB09182736CCDD;  
+    std::bitset<pSize> key64 = 0x1ABB09187836CCDD;  
     std::bitset <pSize> pText (0x123456ABCD132536);
-
-
-     std::cout << std::hex << mainCipher(pText, key64).to_ulong();
-    //  for( const auto & item : keyArray)
-    //         std::cout << std::hex << item.to_ulong() << std::endl;
- //   std::bitset <ksize_o> a = 0xFCFCFCFCFCFC;
-  //  std::bitset <pSplitSize> b = 0xFCFCFCFC;
-  // std::cout << F_Straight_D_box(F_Sub_boxes(Func_xor(F_ExpansionD(b), a)));
-   
-   
-    //std::bitset<pSize> text = P_Ini_permutation(pText);
-    //PSplit(text, p_lr);
-    // std::cout << std::hex << pText << std::endl;
-    //std::cout << std::hex << p_lr.Lside.to_ulong() << " "  << std::hex << p_lr.Rside.to_ulong();
+    mainCipher(pText, key64);
 }
 
 
@@ -96,11 +81,13 @@ std::bitset<ksize_o> out;
 std::bitset<ksize_o> F_ExpansionD(const std::bitset<pSplitSize> & p_Rside){
     size_t j{0};
     std::bitset<ksize_o> out;
-
+    //std::cout << p_Rside << std::endl;
     for (int i{ksize_o}; i > 0; i-- ){
         out[i - 1] = p_Rside[-1 * (ExpansionD[j] - 32)];
         j++;
     }
+   // std::cout << out << std::endl << std::endl << std::endl << std::endl;
+   //std::cout << out << std::endl;
     return out;
 }
 
@@ -109,6 +96,7 @@ inline std::bitset <ksize_o> Func_xor (const std::bitset<ksize_o> & key, const s
 }
 
 std::bitset <pSplitSize> F_Sub_boxes (const std::bitset<ksize_o> & postXor){
+  //  std::cout << postXor << std::endl <<std::endl; 
      std::array <size_t, 8> someArr = getNextIndexBits(postXor);
      std::bitset<pSplitSize> out(0);
      std::bitset<32> SboxOut (0);
@@ -148,6 +136,8 @@ std::bitset <pSplitSize> F_Sub_boxes (const std::bitset<ksize_o> & postXor){
         SboxOut = F_Sbox_8[someArr[7]];
     out = out ^ SboxOut;
 
+    //std::cout << std::endl <<std::endl << std::endl << out << std::endl << std::endl << std::endl  ;
+
    return out ;
 }
 
@@ -176,7 +166,7 @@ std::bitset <pSplitSize> F_Sub_boxes (const std::bitset<ksize_o> & postXor){
         }
         k-=6;
         indexArr[i] = indexImm.to_ulong();
-      //  std::cout << index << " " << indexImm << " " << indexArr[i] << std::endl;
+     //  std::cout << std::dec << index << " " << indexImm << " " << indexArr[i] << std::endl;
     }
     return indexArr;
 }
@@ -269,17 +259,20 @@ std::bitset<pSize> mainCipher(const std::bitset<pSize> & pText, const std::bitse
     PSplit(_pText, p_lr);
 
     std::bitset<pSplitSize> postFunc;
-     std::cout << std::hex << p_lr.Lside.to_ulong() << " " << p_lr.Rside.to_ullong() << std::endl;
-    for(size_t i{0}; i<rounds; i++){
-        postFunc = 0;
+     //std::cout << std::hex << p_lr.Lside.to_ulong() << " " << p_lr.Rside.to_ullong() << std::endl;
+   for(size_t i{0}; i<rounds; i++){
+        postFunc = 0x00000000;
         postFunc = F_Top(p_lr, keyArray[i]);
         P_lfxor(p_lr, postFunc);
+       // if(rounds != 15)
         P_swapper(p_lr);
-        std::cout << std::hex << p_lr.Lside.to_ulong() << " " << p_lr.Rside.to_ullong() << " " << keyArray[i].to_ulong() << std::endl ;
-    }
+       // std::cout << std::hex << p_lr.Lside.to_ulong() << " " << p_lr.Rside.to_ullong() << " " << keyArray[i].to_ulong() << std::endl ;
+   }
+     P_swapper(p_lr);
 
     std::bitset<pSize> out(P_Combine(p_lr));
-  //  out = P_Final_permutation(out);
+  out = P_Final_permutation(out);
+  std::cout << std::hex << out.to_ulong();
     return out;
 }
 
