@@ -2,15 +2,24 @@
 #include <iostream>
 std::array <size_t, 8> getNextIndexBits (const std::bitset <ksize_o>  );
 int main(){
-    K_LR_BLOCK k_lr;
-    // std::bitset<pSize> key64 = 0xAABB09182736CCDD;
-    // std::array <std::bitset<ksize_o>, karray>  keyArray;
-    // Keygen(key64, k_lr, keyArray);
+
+    
+    std::bitset<pSize> key64 = 0xAABB09182736CCDD;  
+    std::bitset <pSize> pText (0x123456ABCD132536);
+
+
+     std::cout << std::hex << mainCipher(pText, key64).to_ulong();
     //  for( const auto & item : keyArray)
     //         std::cout << std::hex << item.to_ulong() << std::endl;
-    std::bitset <ksize_o> a = 0xFCFCFCFCFCFC;
-    std::bitset <pSplitSize> b = 0xFCFCFCFC;
-   std::cout << F_Straight_D_box(F_Sub_boxes(Func_xor(F_ExpansionD(b), a)));
+ //   std::bitset <ksize_o> a = 0xFCFCFCFCFCFC;
+  //  std::bitset <pSplitSize> b = 0xFCFCFCFC;
+  // std::cout << F_Straight_D_box(F_Sub_boxes(Func_xor(F_ExpansionD(b), a)));
+   
+   
+    //std::bitset<pSize> text = P_Ini_permutation(pText);
+    //PSplit(text, p_lr);
+    // std::cout << std::hex << pText << std::endl;
+    //std::cout << std::hex << p_lr.Lside.to_ulong() << " "  << std::hex << p_lr.Rside.to_ulong();
 }
 
 
@@ -173,7 +182,7 @@ std::bitset <pSplitSize> F_Sub_boxes (const std::bitset<ksize_o> & postXor){
 }
 
 
-std::bitset <pSplitSize> F_Sub_boxes (const std::bitset<pSplitSize> & text){
+std::bitset <pSplitSize> F_Straight_D_box (const std::bitset<pSplitSize> & text) {
     size_t j{0};
     std::bitset<pSplitSize> out;
 
@@ -183,3 +192,94 @@ std::bitset <pSplitSize> F_Sub_boxes (const std::bitset<pSplitSize> & text){
     }
     return out;
 } 
+
+std::bitset <pSplitSize> F_Top(const P_LR_BLOCK & p_lr, const std::bitset<ksize_o> & roundKey){
+    // std::cout << F_Straight_D_box(F_Sub_boxes(Func_xor(F_ExpansionD(b), a)));
+    return F_Straight_D_box(F_Sub_boxes(Func_xor(F_ExpansionD(p_lr.Rside), roundKey)));
+
+}
+
+
+
+//----------------------------------------------------------------------//
+//                    Top DES Function               -------------------//
+//----------------------------------------------------------------------//
+
+void PSplit(const std::bitset<pSize> & pText, P_LR_BLOCK & p_lr){
+    std::bitset<pSize> mask = 0x00000000FFFFFFFF;
+    std::bitset<pSize> halfText (0);
+    halfText = mask & pText;
+    p_lr.Rside = halfText.to_ulong();
+
+    mask = 0xFFFFFFFF00000000;
+    halfText ^= halfText;
+    halfText = mask & pText;
+    halfText >>= 32;
+    p_lr.Lside = halfText.to_ulong();
+
+}
+
+
+std::bitset<pSize> P_Ini_permutation (const std::bitset<pSize> & pText){
+    size_t j{0};
+    std::bitset<pSize> out;
+
+    for (int i{pSize}; i > 0; i-- ){
+        out[i - 1] = pText[-1 * ( P_IniPermBox[j] - 64)];
+        j++;
+    }
+    return out;
+}
+
+void P_swapper(P_LR_BLOCK & p_lr){
+    std::bitset<pSplitSize> l_buff = p_lr.Lside;
+    p_lr.Lside = p_lr.Rside;
+    p_lr.Rside = l_buff;
+}
+
+void P_lfxor(P_LR_BLOCK & p_lr, const std::bitset<pSplitSize> & postF){
+    p_lr.Lside ^= postF;
+}
+
+std::bitset<pSize> P_Final_permutation (const std::bitset<pSize> & pText){
+    size_t j{0};
+    std::bitset<pSize> out;
+
+    for (int i{pSize}; i > 0; i-- ){
+        out[i - 1] = pText[-1 * ( P_FinalPermBox[j] - 64)];
+        j++;
+    }
+    return out;
+}
+
+std::bitset<pSize> P_Combine(const P_LR_BLOCK & p_lr){
+    std::bitset<pSize> merge (p_lr.Lside.to_string() + p_lr.Rside.to_string() );
+    return merge;
+}
+
+//Cipher
+
+std::bitset<pSize> mainCipher(const std::bitset<pSize> & pText, const std::bitset<pSize> & kText){
+    K_LR_BLOCK k_lr;
+    P_LR_BLOCK p_lr;
+    std::array <std::bitset<ksize_o>, karray>  keyArray;
+    Keygen(kText, k_lr, keyArray);
+
+    std::bitset<pSize> _pText = P_Ini_permutation(pText);
+    PSplit(_pText, p_lr);
+
+    std::bitset<pSplitSize> postFunc;
+     std::cout << std::hex << p_lr.Lside.to_ulong() << " " << p_lr.Rside.to_ullong() << std::endl;
+    for(size_t i{0}; i<rounds; i++){
+        postFunc = 0;
+        postFunc = F_Top(p_lr, keyArray[i]);
+        P_lfxor(p_lr, postFunc);
+        P_swapper(p_lr);
+        std::cout << std::hex << p_lr.Lside.to_ulong() << " " << p_lr.Rside.to_ullong() << " " << keyArray[i].to_ulong() << std::endl ;
+    }
+
+    std::bitset<pSize> out(P_Combine(p_lr));
+  //  out = P_Final_permutation(out);
+    return out;
+}
+
