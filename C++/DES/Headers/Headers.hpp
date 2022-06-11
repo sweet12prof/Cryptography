@@ -22,3 +22,6 @@ void P_lfxor(P_LR_BLOCK &, const std::bitset<pSplitSize> &);
 std::bitset<pSize> mainCipher(const std::bitset<pSize> &, const std::bitset<pSize> &); 
 std::bitset<pSize> P_Final_permutation (const std::bitset<pSize> & );
 std::bitset<pSize> P_Combine(const P_LR_BLOCK & );
+
+//ReverseCipher
+std::bitset<pSize> reverseCipher(const std::bitset<pSize> & , const std::bitset<pSize> & );

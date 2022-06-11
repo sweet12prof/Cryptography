@@ -4,7 +4,7 @@ std::array <size_t, 8> getNextIndexBits (const std::bitset <ksize_o>  );
 int main(){
     std::bitset<pSize> key64 = 0x1ABB09187836CCDD;  
     std::bitset <pSize> pText (0x123456ABCD132536);
-    mainCipher(pText, key64);
+    reverseCipher(mainCipher(pText, key64), key64);
 }
 
 
@@ -272,7 +272,36 @@ std::bitset<pSize> mainCipher(const std::bitset<pSize> & pText, const std::bitse
 
     std::bitset<pSize> out(P_Combine(p_lr));
   out = P_Final_permutation(out);
-  std::cout << std::hex << out.to_ulong();
+  std::cout << std::hex << out.to_ulong() << std::endl;
     return out;
 }
+
+
+std::bitset<pSize> reverseCipher(const std::bitset<pSize> & pText, const std::bitset<pSize> & kText){
+    K_LR_BLOCK k_lr;
+    P_LR_BLOCK p_lr;
+    std::array <std::bitset<ksize_o>, karray>  keyArray;
+    Keygen(kText, k_lr, keyArray);
+
+    std::bitset<pSize> _pText = P_Ini_permutation(pText);
+    PSplit(_pText, p_lr);
+
+    std::bitset<pSplitSize> postFunc;
+     //std::cout << std::hex << p_lr.Lside.to_ulong() << " " << p_lr.Rside.to_ullong() << std::endl;
+   for(size_t i{0}; i<rounds; i++){
+        postFunc = 0x00000000;
+        postFunc = F_Top(p_lr, keyArray[rounds-i - 1]);
+        P_lfxor(p_lr, postFunc);
+       // if(rounds != 15)
+        P_swapper(p_lr);
+       // std::cout << std::hex << p_lr.Lside.to_ulong() << " " << p_lr.Rside.to_ullong() << " " << keyArray[i].to_ulong() << std::endl ;
+   }
+    P_swapper(p_lr);
+
+    std::bitset<pSize> out(P_Combine(p_lr));
+    out = P_Final_permutation(out);
+    std::cout << std::hex << out.to_ulong();
+    return out;
+}
+
 
